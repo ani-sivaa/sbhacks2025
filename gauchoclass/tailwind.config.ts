@@ -12,6 +12,9 @@ const config: Config = {
         'spin-slow': 'spin 3s linear infinite',
         'pulse': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
+      fontFamily: {
+        sans: ['var(--font-space-grotesk)'],
+      },
     },
   },
   plugins: [

@@ -31,20 +31,93 @@ const styles = `
   ;
   grid-template-columns: auto 1fr 1fr 1fr auto;
   grid-template-rows: auto minmax(250px, auto) auto auto;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
 }
 
+@media (max-width: 1024px) {
+  .course-grid {
+    grid-template-areas:
+      "center center center center center"
+      "credits prof rating would diff"
+      "gpa desc desc desc term2"
+      "term desc desc desc term2"
+      "dist dist dist dist dist";
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .center-card {
+    margin: 0.5rem;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-grid {
+    grid-template-areas:
+      "center"
+      "credits"
+      "prof"
+      "rating"
+      "would"
+      "diff"
+      "gpa"
+      "desc"
+      "term"
+      "term2"
+      "dist";
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .center-card {
+    transform: scale(1);
+    margin: 0;
+    padding: 1.5rem;
+  }
+  
+  .center-card:hover {
+    transform: scale(1.02);
+  }
+}
+
 .center-card {
   grid-area: center;
-  background: #E2EEFF;
-  padding: 2rem;
-  border-radius: 1.5rem;
+  background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+  padding: 3rem;
+  border-radius: 2rem;
   text-align: center;
-  transform: scale(1.1);
+  transform: scale(1.05);
   z-index: 10;
+  margin: 1rem;
+  box-shadow: 
+    0 0 40px rgba(0, 0, 0, 0.2),
+    inset 0 0 15px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
+}
+
+.center-card:hover {
+  transform: scale(1.07);
+  box-shadow: 
+    0 0 50px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.metric-card {
+  background: linear-gradient(145deg, #1E1E1E, #141414);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: white;
+  transition: transform 0.2s ease;
+  height: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .metric-card {
@@ -210,7 +283,7 @@ if (loading) {
 // Course Details View
 if (selectedCourse) {
   return (
-    <div className="min-h-screen bg-black p-8">
+    <div className="min-h-screen bg-black p-8 pb-32 overflow-y-auto">
       <style>{styles}</style>
       
       <div className="course-grid">
@@ -228,18 +301,20 @@ if (selectedCourse) {
           <div className="metric-value text-xl">{selectedCourse.instructor}</div>
         </div>
         {/* Center Card - Course Code */}
-        <div className="center-card p-8">
-          <h1 className="text-4xl pd-8 font-black text-gray-900 mb-2">
+        <div className="center-card">
+          <h1 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 mb-4">
             {selectedCourse.course}
           </h1>
           <p className="text-xl text-gray-600">
-            {selectedCourse.coursetitle}
+            
           </p>
         </div>
         {/* Rating */}
-        <div className="metric-card" style={{ gridArea: 'rating' }}>
-          <div className="metric-label">Overview</div>
-          <div className="text-sm">This data was made available through the FERPA act.</div>
+        <div className="metric-card text-8xl" style={{ gridArea: 'rating' }}>
+          <div className="text-4xl">{selectedCourse.coursetitle}</div>
+          <div className="text-sm">
+          
+          </div>
         </div>
         
         {/* Average GPA */}
@@ -326,7 +401,7 @@ if (selectedCourse) {
               {/* Description Panel */}
               <div className="w-full flex-none px-6 py-4 overflow-y-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-700">
                 <div className="prose prose-invert max-w-none">
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap break-words">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap break-words text-2xl">
                     {selectedCourse.description || 'No description available.'}
                   </p>
                 </div>
@@ -337,7 +412,7 @@ if (selectedCourse) {
                 <div className="space-y-4">
                   {selectedCourse.studentcomments ? (
                     <div className="bg-gray-800 rounded-lg p-4">
-                      <p className="text-gray-300 italic whitespace-pre-wrap break-words">
+                      <p className="text-gray-300 italic whitespace-pre-wrap break-words text-2xl">
                         "{selectedCourse.studentcomments}"
                       </p>
                       <div className="mt-2 flex justify-between items-center">
@@ -356,7 +431,7 @@ if (selectedCourse) {
                   {selectedCourse.prereqs ? (
                     <div className="bg-gray-800 rounded-lg p-4">
                       <h3 className="text-blue-400 font-medium mb-2">Prerequisites</h3>
-                      <p className="text-gray-300 whitespace-pre-wrap break-words">
+                      <p className="text-gray-300 whitespace-pre-wrap break-words text-2xl">
                         {selectedCourse.prereqs}
                       </p>
                     </div>
@@ -370,9 +445,9 @@ if (selectedCourse) {
         </div>
         
         {/* Grade Distribution */}
-        <div className="metric-card" style={{ gridArea: 'dist' }}>
-          <div className="metric-label mb-2">Grade Distribution</div>
-          <div className="h-64">
+        <div className="metric-card mb-20" style={{ gridArea: 'dist' }}>
+          <div className="metric-label mb-4">Grade Distribution</div>
+          <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={getGradeData(selectedCourse)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
