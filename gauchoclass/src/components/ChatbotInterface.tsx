@@ -58,13 +58,13 @@ export default function ChatbotInterface({
       console.log("📝 Updated messages with bot response");
     } catch (error) {
       console.error("❌ Error in handleSubmit:", error);
-      console.error("❌ Error stack:", error.stack);
+      console.error("❌ Error stack:", error instanceof Error ? error.stack : 'No stack trace available');
       setMessages((prev) => [
         ...prev,
         {
           text:
             "Sorry, I encountered an error. Please try again. Error: " +
-            error.message,
+            (error instanceof Error ? error.message : 'Unknown error'),
           isUser: false,
         },
       ]);

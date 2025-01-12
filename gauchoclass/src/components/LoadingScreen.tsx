@@ -161,7 +161,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             src="/computer.svg" 
             alt="Computer illustration" 
             fill
-            className="object-cover z-0 pointer-events-none  translate-y-[200px] translate-x-[-200px]"
+            className="object-cover z-0 pointer-events-none translate-y-[200px] translate-x-[-200px]"
           />
         </div>
       </div>

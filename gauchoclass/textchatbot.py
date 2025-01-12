@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import logging
+import signal
+import sys
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -178,10 +180,18 @@ def chat():
 def health_check():
     return jsonify({'status': 'healthy'})
 
+def signal_handler(sig, frame):
+    print('\nGracefully shutting down server...')
+    sys.exit(0)
+
 if __name__ == '__main__':
     print("Starting Flask server...")
     try:
+        # Register signal handlers
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+        
         app.run(debug=True, host='localhost', port=8000)
-        print("Server started successfully!")
     except Exception as e:
         logger.error(f"Error starting server: {str(e)}")
+        sys.exit(1)
