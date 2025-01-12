@@ -13,6 +13,8 @@ export interface Course {
     studentcomments?: string;
     avgGPA?: number;
     nLetterStudents?: number;
+    wouldtakeagain?: string;
+    difficultylevel?: number;
     // Grade distribution fields
     Ap?: number;
     A?: number;

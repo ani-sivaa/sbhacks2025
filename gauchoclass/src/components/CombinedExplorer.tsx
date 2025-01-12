@@ -214,15 +214,7 @@ if (selectedCourse) {
       <style>{styles}</style>
       
       <div className="course-grid">
-        {/* Center Card - Course Code */}
-        <div className="center-card">
-          <h1 className="text-4xl font-black text-gray-900 mb-2">
-            {selectedCourse.course}
-          </h1>
-          <p className="text-xl text-gray-600">
-            {selectedCourse.coursetitle}
-          </p>
-        </div>
+        
         
         {/* Credits */}
         <div className="metric-card" style={{ gridArea: 'credits' }}>
@@ -231,11 +223,19 @@ if (selectedCourse) {
         </div>
         
         {/* Professor */}
-        <div className="metric-card" style={{ gridArea: 'prof' }}>
+        <div className="metric-card p-8" style={{ gridArea: 'prof' }}>
           <div className="metric-label">Professor</div>
           <div className="metric-value text-xl">{selectedCourse.instructor}</div>
         </div>
-        
+        {/* Center Card - Course Code */}
+        <div className="center-card p-8">
+          <h1 className="text-4xl pd-8 font-black text-gray-900 mb-2">
+            {selectedCourse.course}
+          </h1>
+          <p className="text-xl text-gray-600">
+            {selectedCourse.coursetitle}
+          </p>
+        </div>
         {/* Rating */}
         <div className="metric-card" style={{ gridArea: 'rating' }}>
           <div className="metric-label">Overview</div>
@@ -251,7 +251,8 @@ if (selectedCourse) {
         {/* Difficulty */}
         <div className="metric-card" style={{ gridArea: 'diff' }}>
           <div className="metric-label">Difficulty</div>
-          <div className="metric-value">3.7</div>
+          <div className="metric-value">{selectedCourse.difficultylevel || '—'}</div>
+          <div className="text-gray-400 text-sm mt-2">out of 5</div>
         </div>
         
         {/* Term */}
@@ -274,7 +275,10 @@ if (selectedCourse) {
         {/* Would Take Again */}
         <div className="metric-card" style={{ gridArea: 'would' }}>
           <div className="metric-label">Would Take Again</div>
-          <div className="metric-value">36%</div>
+          <div className="metric-value">
+            {selectedCourse.wouldtakeagain ? selectedCourse.wouldtakeagain.replace('%', '') : '—'}%
+          </div>
+          <div className="text-gray-400 text-sm mt-2">of students</div>
         </div>
         
         {/* Description Card with Tabs */}
@@ -312,82 +316,53 @@ if (selectedCourse) {
             </button>
           </div>
 
-          <div className="overflow-hidden h-[250px]">
+          <div className="relative overflow-hidden h-[250px] bg-gray-900 rounded-lg">
             <div 
-              className="transition-transform duration-300 ease-in-out flex h-full"
+              className="absolute inset-0 transition-transform duration-500 ease-in-out flex"
               style={{
-                transform: `translateX(-${
-                  activeTab === 'description' ? 0 : activeTab === 'comments' ? 100 : 200
-                }%)`,
-                width: '300%'
+                transform: `translateX(-${activeTab === 'description' ? 0 : activeTab === 'comments' ? 100 : 200}%)`
               }}
             >
               {/* Description Panel */}
-              <div className="w-full  flex-shrink-0 px-4 overflow-y-auto h-full">
-                <div className="text-gray-300 leading-relaxed">
-                  {selectedCourse.description}
+              <div className="w-full flex-none px-6 py-4 overflow-y-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-700">
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap break-words">
+                    {selectedCourse.description || 'No description available.'}
+                  </p>
                 </div>
               </div>
 
               {/* Comments Panel */}
-              <div className="w-full flex-shrink-0 px-4">
+              <div className="w-full flex-none px-6 py-4 overflow-y-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-700">
                 <div className="space-y-4">
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <p className="text-gray-300 italic">"Great course! The professor was very engaging and the material was interesting. The homework assignments were challenging but helped reinforce the concepts learned in class."</p>
-                    <div className="mt-2 flex justify-between items-center">
-                      <p className="text-gray-500 text-sm">Fall 2023</p>
-                      <div className="flex items-center">
-                        <span className="text-green-400 text-sm mr-2">Grade: A</span>
-                        <span className="text-blue-400 text-sm">Hours/Week: 8</span>
+                  {selectedCourse.studentcomments ? (
+                    <div className="bg-gray-800 rounded-lg p-4">
+                      <p className="text-gray-300 italic whitespace-pre-wrap break-words">
+                        "{selectedCourse.studentcomments}"
+                      </p>
+                      <div className="mt-2 flex justify-between items-center">
+                        <p className="text-gray-500 text-sm">{selectedCourse.quarter} {selectedCourse.year}</p>
                       </div>
                     </div>
-                  </div>
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <p className="text-gray-300 italic">"Challenging but rewarding. Be prepared to put in the work. The professor is knowledgeable and always willing to help during office hours."</p>
-                    <div className="mt-2 flex justify-between items-center">
-                      <p className="text-gray-500 text-sm">Spring 2023</p>
-                      <div className="flex items-center">
-                        <span className="text-green-400 text-sm mr-2">Grade: B+</span>
-                        <span className="text-blue-400 text-sm">Hours/Week: 10</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <p className="text-gray-300 italic">"The course content is fascinating, but the workload can be intense. Make sure to start assignments early and attend all the lectures."</p>
-                    <div className="mt-2 flex justify-between items-center">
-                      <p className="text-gray-500 text-sm">Winter 2023</p>
-                      <div className="flex items-center">
-                        <span className="text-green-400 text-sm mr-2">Grade: A-</span>
-                        <span className="text-blue-400 text-sm">Hours/Week: 12</span>
-                      </div>
-                    </div>
-                  </div>
+                  ) : (
+                    <p className="text-gray-500 italic">No student comments available.</p>
+                  )}
                 </div>
               </div>
 
               {/* Prerequisites Panel */}
-              <div className="w-full flex-shrink-0 px-4">
+              <div className="w-full flex-none px-6 py-4 overflow-y-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-700">
                 <div className="space-y-4">
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <h3 className="text-blue-400 font-medium mb-2">Required Prerequisites</h3>
-                    <ul className="list-disc list-inside text-gray-300 space-y-2">
-                      <li>MATH 101 - Calculus I (Minimum grade: C)</li>
-                      <li>CS 201 - Introduction to Programming</li>
-                    </ul>
-                  </div>
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <h3 className="text-purple-400 font-medium mb-2">Recommended Background</h3>
-                    <ul className="list-disc list-inside text-gray-300 space-y-2">
-                      <li>Familiarity with Python programming</li>
-                      <li>Basic understanding of algorithms</li>
-                    </ul>
-                  </div>
-                  <div className="bg-gray-800 rounded-lg p-4">
-                    <h3 className="text-red-400 font-medium mb-2">Notes</h3>
-                    <p className="text-gray-300">
-                      Students without the required prerequisites must obtain instructor permission to enroll.
-                    </p>
-                  </div>
+                  {selectedCourse.prereqs ? (
+                    <div className="bg-gray-800 rounded-lg p-4">
+                      <h3 className="text-blue-400 font-medium mb-2">Prerequisites</h3>
+                      <p className="text-gray-300 whitespace-pre-wrap break-words">
+                        {selectedCourse.prereqs}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 italic">No prerequisites listed.</p>
+                  )}
                 </div>
               </div>
             </div>
