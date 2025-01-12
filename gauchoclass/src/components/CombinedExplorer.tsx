@@ -283,7 +283,7 @@ if (loading) {
 // Course Details View
 if (selectedCourse) {
   return (
-    <div className="min-h-screen bg-black p-8 pb-32 overflow-y-auto">
+    <div className="min-h-screen bg-black p-8 pb-32 overflow-y-auto h-full">
       <style>{styles}</style>
       
       <div className="course-grid">
