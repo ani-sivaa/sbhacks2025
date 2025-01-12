@@ -53,21 +53,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
       animation-delay: 0.3s;
     }
 
-    @keyframes moveToFixedBrandPosition {
-      0% {
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%) scale(1);
-        font-size: 4.5rem;
-      }
-      100% {
-        top: 64px;
-        left: 50%;
-        transform: translateX(-50%) scale(0.6);
-        font-size: 2.75rem;
-      }
-    }
-
+ 
     @keyframes fadeOutImage {
       0% {
         opacity: 1;
