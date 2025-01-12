@@ -290,15 +290,15 @@ if (selectedCourse) {
         
         
         {/* Credits */}
-        <div className="metric-card" style={{ gridArea: 'credits' }}>
-          <div className="metric-label">Credits</div>
-          <div className="metric-value">{selectedCourse.units}</div>
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'credits' }}>
+          <div className="metric-label text-lg">Credits</div>
+          <div className="metric-value text-5xl">{selectedCourse.units}</div>
         </div>
         
         {/* Professor */}
-        <div className="metric-card p-8" style={{ gridArea: 'prof' }}>
-          <div className="metric-label">Professor</div>
-          <div className="metric-value text-xl">{selectedCourse.instructor}</div>
+        <div className="metric-card p-8 text-center flex flex-col items-center justify-center" style={{ gridArea: 'prof' }}>
+          <div className="metric-label text-lg">Professor</div>
+          <div className="metric-value text-2xl">{selectedCourse.instructor}</div>
         </div>
         {/* Center Card - Course Code */}
         <div className="center-card">
@@ -310,50 +310,50 @@ if (selectedCourse) {
           </p>
         </div>
         {/* Rating */}
-        <div className="metric-card text-8xl" style={{ gridArea: 'rating' }}>
-          <div className="text-4xl">{selectedCourse.coursetitle}</div>
-          <div className="text-sm">
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'rating' }}>
+          <div className="text-5xl">{selectedCourse.coursetitle}</div>
+          <div className="text-base">
           
           </div>
         </div>
         
         {/* Average GPA */}
-        <div className="metric-card" style={{ gridArea: 'gpa' }}>
-          <div className="metric-label">Average GPA</div>
-          <div className="metric-value">{selectedCourse.avgGPA}</div>
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'gpa' }}>
+          <div className="metric-label text-lg">Average GPA</div>
+          <div className="metric-value text-5xl">{selectedCourse.avgGPA}</div>
         </div>
 
         {/* Difficulty */}
-        <div className="metric-card" style={{ gridArea: 'diff' }}>
-          <div className="metric-label">Difficulty</div>
-          <div className="metric-value">{selectedCourse.difficultylevel || '—'}</div>
-          <div className="text-gray-400 text-sm mt-2">out of 5</div>
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'diff' }}>
+          <div className="metric-label text-lg">Difficulty</div>
+          <div className="metric-value text-5xl">{selectedCourse.difficultylevel || '—'}</div>
+          <div className="text-gray-400 text-base mt-2">out of 5</div>
         </div>
         
         {/* Term */}
-        <div className="metric-card" style={{ gridArea: 'term' }}>
-          <div className="metric-label">Data From</div>
-          <div className="metric-value text-xl">
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'term' }}>
+          <div className="metric-label text-lg">Data From</div>
+          <div className="metric-value text-2xl">
             {selectedCourse.quarter} {selectedCourse.year}
           </div>
         </div>
 
         {/* Class Size */}
-        <div className="metric-card" style={{ gridArea: 'term2' }}>
-          <div className="metric-label">Total Enrollment</div>
-          <div className="metric-value">
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'term2' }}>
+          <div className="metric-label text-lg">Total Enrollment</div>
+          <div className="metric-value text-5xl">
             {getGradeData(selectedCourse).reduce((sum, grade) => sum + grade.count, 0)}
           </div>
-          <div className="text-gray-400 text-sm mt-2">students</div>
+          <div className="text-gray-400 text-base mt-2">students</div>
         </div>
         
         {/* Would Take Again */}
-        <div className="metric-card" style={{ gridArea: 'would' }}>
-          <div className="metric-label">Would Take Again</div>
-          <div className="metric-value">
+        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'would' }}>
+          <div className="metric-label text-lg">Would Take Again</div>
+          <div className="metric-value text-5xl">
             {selectedCourse.wouldtakeagain ? selectedCourse.wouldtakeagain.replace('%', '') : '—'}%
           </div>
-          <div className="text-gray-400 text-sm mt-2">of students</div>
+          <div className="text-gray-400 text-base mt-2">of students</div>
         </div>
         
         {/* Description Card with Tabs */}
