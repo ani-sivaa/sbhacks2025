@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import Papa from 'papaparse';
 import _ from 'lodash';
@@ -372,6 +372,19 @@ ${course.description ? `\nDescription: ${course.description}` : ''}`
     }
   };
 
+  // Add a ref for the messages container
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Add scroll function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Update useEffect to scroll on new messages
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const chatInterface = typeof window !== 'undefined' && (
     <div 
       className={`fixed bottom-24 right-8 w-96 bg-gray-800 rounded-lg shadow-xl transition-all duration-300 ${
@@ -417,6 +430,7 @@ ${course.description ? `\nDescription: ${course.description}` : ''}`
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} /> {/* Add this div for scrolling */}
       </div>
 
       {/* Input Area */}
@@ -426,6 +440,12 @@ ${course.description ? `\nDescription: ${course.description}` : ''}`
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
             placeholder="Type your message..."
             className="flex-1 p-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
