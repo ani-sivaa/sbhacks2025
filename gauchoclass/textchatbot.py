@@ -8,6 +8,13 @@ from sentence_transformers import SentenceTransformer
 import logging
 import signal
 import sys
+from aryn_sdk.partition import partition_file, tables_to_pandas
+import pdf2image
+import re
+from io import BytesIO
+from typing import List, Dict
+import pandas as pd
+import numpy as np
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +22,13 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:3000"],  # Your Next.js frontend port
+        "methods": ["GET", "POST"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Load API keys from .env
 load_dotenv()
@@ -183,6 +196,105 @@ def health_check():
 def signal_handler(sig, frame):
     print('\nGracefully shutting down server...')
     sys.exit(0)
+
+# Add the departments set and course pattern
+# List of department codes
+departments = {'ED', 'CMPSC', 'RUSS', 'CNCSP', 'PSY', 'DYNS', 'EARTH', 
+               'BL', 'TMP', 'ESM', 'ITAL', 'CHIN', 'DANCE', 'MATH', 'GLOBL', 
+               'KOR', 'LATIN', 'RG', 'EDS', 'ENGL', 'ECON', 'PSTAT', 'HEB', 
+               'PORT', 'EEMB', 'CHEM', 'FEMST', 'WRIT', 'EACS', 'ENV', 'CMPSCW', 
+               'GER', 'W&L', 'PHYS', 'GRAD', 'BIOL', 'BMSE', 'AS', 'MARSC', 'LAIS', 
+               'MUS', 'CH', 'ANTH', 'COMM', 'SLAV', 'GREEK', 'C', 'FAMST', 'MAT', 
+               'JAPAN', 'MS', 'SPAN', 'INT', 'ES', 'ASTRO', 'ART', 'CLASS', 'MATRL', 
+               'ECE', 'SOC', 'HIST', 'ENGR', 'THTR', 'LING', 'ME', 'BIOE', 'ESS', 
+               'FR', 'GEOG', 'POL', 'PHIL', 'MCDB', 'ARTHI'}
+              # ... rest of departments ...}
+course_pattern = rf'\b(?:{"|".join(departments)})\s\d{{1,3}}[A-Z]?\b'
+
+def parse_prerequisites(prereq_string: str, completed_courses: List[str]) -> bool:
+    if pd.isna(prereq_string) or prereq_string.lower() == 'none':
+        return True
+        
+    # Convert completed courses to embeddings
+    completed_embeddings = model.encode([c.strip() for c in completed_courses])
+    prereq_embedding = model.encode(prereq_string)
+    
+    # Calculate similarity scores
+    similarities = np.dot(completed_embeddings, prereq_embedding.T)
+    
+    # Check if any completed course is similar enough to satisfy prereq
+    return np.max(similarities) > 0.7  # Threshold can be adjusted
+
+def get_available_courses(completed_courses: List[str], courses_df: pd.DataFrame) -> List[Dict]:
+    available_courses = []
+    
+    for _, course in courses_df.iterrows():
+        # Skip if already completed
+        if course['course'] in completed_courses:
+            continue
+            
+        # Check prerequisites
+        if parse_prerequisites(course['prereqs'], completed_courses):
+            available_courses.append({
+                'code': course['course'],
+                'title': course['coursetitle'],
+                'prereqs': course['prereqs'],
+                'description': course['description'],
+                'units': course['units']
+            })
+    
+    return available_courses
+
+# Add new route for transcript upload
+@app.route('/api/upload-transcript', methods=['POST'])
+def upload_transcript():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
+            
+        file = request.files['file']
+        if file.filename == '' or not file.filename.endswith('.pdf'):
+            return jsonify({'error': 'Invalid file'}), 400
+
+        # Process PDF
+        file_stream = BytesIO(file.read())
+        partitioned_file = partition_file(
+            file_stream, 
+            os.getenv("ARYN_API_KEY"),
+            extract_table_structure=True, 
+            threshold=0.1
+        )
+
+        # Extract tables and courses
+        pandas_tables = tables_to_pandas(partitioned_file)
+        all_courses = []
+        
+        for elt, dataframe in pandas_tables:
+            if elt['type'] == 'table':
+                table_text = dataframe.to_string(index=False, header=False)
+                courses = re.findall(course_pattern, table_text)
+                all_courses.extend(courses)
+
+        unique_courses = sorted(set(all_courses))
+        
+        # Load courses data
+        courses_df = pd.read_csv('public/merged_courses.csv')
+        
+        # Get available courses
+        available_courses = get_available_courses(unique_courses, courses_df)
+        
+        # Sort by relevance (you could add more sophisticated sorting here)
+        available_courses.sort(key=lambda x: x['units'], reverse=True)
+        
+        return jsonify({
+            'success': True,
+            'completed_courses': unique_courses,
+            'available_courses': available_courses[:10]  # Return top 10 suggestions
+        })
+
+    except Exception as e:
+        logger.error(f"Error processing transcript: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     print("Starting Flask server...")

@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import _ from 'lodash';
 import { Course, GradeData, CourseOption } from '@/types/course';
 import LoadingScreen from './LoadingScreen';
+import { X } from 'lucide-react';
 
 const CombinedExplorer: React.FC = () => {
   // States
@@ -24,6 +25,8 @@ const CombinedExplorer: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userCourses, setUserCourses] = useState<string[]>([]);
+  const [availableCourses, setAvailableCourses] = useState<any[]>([]);
 
   // Styles
   const styles = `
@@ -314,6 +317,61 @@ const CombinedExplorer: React.FC = () => {
     }
   };
 
+  const formatCourseMessage = (course: any) => {
+    return `${course.code}: ${course.title}
+Units: ${course.units}
+Prerequisites: ${course.prereqs || 'None'}
+${course.description ? `\nDescription: ${course.description}` : ''}`
+  };
+
+  const handleTranscriptUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      console.log('Uploading transcript...');
+      const response = await fetch('http://localhost:8000/api/upload-transcript', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Upload failed: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Upload successful:', data);
+      setUserCourses(data.completed_courses);
+      setAvailableCourses(data.available_courses);
+
+      // Format course suggestions message
+      const suggestionsMessage = `Based on your completed courses, here are some recommended courses:\n\n${
+        data.available_courses
+          .slice(0, 5)  // Show top 5 suggestions
+          .map((course: any) => formatCourseMessage(course))
+          .join('\n\n')
+      }\n\nI can help you:\n• Find more courses in specific departments\n• Explain prerequisites in detail\n• Suggest courses based on your interests\n\nWhat would you like to know more about?`;
+
+      setMessages(prev => [...prev, {
+        text: `Transcript processed! Found ${data.completed_courses.length} completed courses.`,
+        isUser: false
+      }, {
+        text: suggestionsMessage,
+        isUser: false
+      }]);
+    } catch (error) {
+      console.error('Upload error:', error);
+      setMessages(prev => [...prev, {
+        text: 'Sorry, there was an error processing your transcript: ' + error.message,
+        isUser: false
+      }]);
+    }
+  };
+
   const chatInterface = typeof window !== 'undefined' && (
     <div 
       className={`fixed bottom-24 right-8 w-96 bg-gray-800 rounded-lg shadow-xl transition-all duration-300 ${
@@ -321,10 +379,23 @@ const CombinedExplorer: React.FC = () => {
       }`}
     >
       {/* Chat Header */}
-      <div className="p-4 border-b border-gray-700 flex justify-between">
-        <h3 className="text-white font-bold">Chat with Oviya</h3>
+      <div className="p-4 border-b border-gray-700 flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-white">Chat with Oviya</h3>
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={handleTranscriptUpload}
+          className="hidden"
+          id="transcript-upload"
+        />
+        <label 
+          htmlFor="transcript-upload"
+          className="cursor-pointer text-blue-400 hover:text-blue-300"
+        >
+          Upload Transcript
+        </label>
         <button onClick={handleChatToggle} className="text-gray-400 hover:text-white">
-          ✕
+          <X size={20} />
         </button>
       </div>
 
