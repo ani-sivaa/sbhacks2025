@@ -99,7 +99,7 @@ export default function About() {
               Data-Driven Course Selection
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              GauchoCourse combines official UCSB data with student experiences
+              GauchoClass combines official UCSB data with student experiences
               to help you make informed decisions about your academic journey.
             </p>
           </div>
@@ -146,7 +146,7 @@ export default function About() {
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Meet the Team</h2>
           <p className="text-gray-400">
-            The passionate developers behind GauchoCourse
+            The passionate developers behind GauchoClass
           </p>
         </div>
 

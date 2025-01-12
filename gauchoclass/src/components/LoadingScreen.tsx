@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface LoadingScreenProps {
   onComplete: () => void;
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
-  const [firstTypedText, setFirstTypedText] = useState('');
-  const [secondTypedText, setSecondTypedText] = useState('');
+  const [firstTypedText, setFirstTypedText] = useState("");
+  const [secondTypedText, setSecondTypedText] = useState("");
   const [isFirstTypingComplete, setIsFirstTypingComplete] = useState(false);
   const [isSecondTypingComplete, setIsSecondTypingComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -89,7 +89,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
 
   useEffect(() => {
     const firstText = "Don't worry, we";
-    const secondText = "GauchoCourse.";
+    const secondText = "GauchoClass.";
     let firstIndex = 0;
     let secondIndex = 0;
 
@@ -120,7 +120,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
     if (isSecondTypingComplete && !isTransitioning) {
       setIsTransitioning(true);
       setTimeout(() => {
-        localStorage.setItem('hasSeenIntro', 'true');
+        localStorage.setItem("hasSeenIntro", "true");
         onComplete();
       }, 1000); // Wait for animations to complete
     }
@@ -129,39 +129,53 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
   return (
     <>
       <style>{styles}</style>
-      <div 
+      <div
         onClick={handleLoadingScreenClick}
         className="fixed inset-0 bg-[#202020] flex cursor-pointer overflow-hidden"
       >
         <div className="w-full md:w-1/2 flex items-center justify-center z-10 relative px-4 md:px-0">
           <div className="space-y-4 max-w-full translate-y-[-280px] translate-x-[340px]">
-            <div className={`space-y-4 ${!isTransitioning ? 'animate-laptop' : ''}`}>
-              <h1 className={`text-3xl md:text-5xl font-light text-gray-300 whitespace-normal
-                ${isTransitioning ? 'slide-out-left' : ''}`}>
+            <div
+              className={`space-y-4 ${
+                !isTransitioning ? "animate-laptop" : ""
+              }`}
+            >
+              <h1
+                className={`text-5xl md:text-5xl font-light text-gray-300 whitespace-normal
+                ${isTransitioning ? "slide-out-left" : ""}`}
+              >
                 {firstTypedText}
               </h1>
-              <h2 
-                className={`text-5xl md:text-7xl font-bold text-transparent bg-clip-text 
+              <h2
+                className={`text-9xl md:text-7xl font-bold text-transparent bg-clip-text 
                   bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 
-                  ${isTransitioning ? 'fixed-brand' : ''}`}
+                  ${isTransitioning ? "fixed-brand" : ""}`}
               >
                 {secondTypedText}
               </h2>
               {isSecondTypingComplete && (
-                <p className={`text-white-500 text-sm uppercase tracking-wider 
-                  ${!isTransitioning ? 'animate-fade-click' : 'slide-out-left'}`}>
+                <p
+                  className={`text-white-500 text-sm uppercase tracking-wider 
+                  ${
+                    !isTransitioning ? "animate-fade-click" : "slide-out-left"
+                  }`}
+                >
                   CLICK ANYWHERE TO CONTINUE
                 </p>
               )}
             </div>
           </div>
         </div>
-        <div className={`w-3/4 relative h-lvh flex items-center justify-center ${isTransitioning ? 'fade-out-image' : ''}`}>
-          <Image 
-            src="/computer.svg" 
-            alt="Computer illustration" 
+        <div
+          className={`w-2/3 relative h-[90vh] flex items-center justify-center ${
+            isTransitioning ? "fade-out-image" : ""
+          }`}
+        >
+          <Image
+            src="/computer.svg"
+            alt="Computer illustration"
             fill
-            className="object-cover z-0 pointer-events-none translate-y-[200px] translate-x-[-200px]"
+            className="object-cover z-0 pointer-events-none translate-y-[300px] translate-x-[-75px] scale-90"
           />
         </div>
       </div>

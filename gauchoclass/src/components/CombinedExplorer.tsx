@@ -515,7 +515,7 @@ ${course.description ? `\nDescription: ${course.description}` : ''}`
           {/* Average GPA */}
           <div className="metric-card text-center flex flex-col items-center justify-center h-48" style={{ gridArea: 'gpa' }}>
             <div className="metric-label text-lg">Average GPA</div>
-            <div className="metric-value text-5xl">{selectedCourse.avgGPA}</div>
+            <div className="metric-value text-5xl">{selectedCourse.avgGPA?.toFixed(2)}</div>
           </div>
 
           {/* Difficulty */}
