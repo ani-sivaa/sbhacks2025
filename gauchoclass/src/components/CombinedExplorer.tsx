@@ -18,6 +18,8 @@ const CombinedExplorer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [activeTab, setActiveTab] = useState<'description' | 'comments' | 'prerequisites'>('description');
+  const [filteredDepts, setFilteredDepts] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
 // Styles
 const styles = `
@@ -169,16 +171,28 @@ useEffect(() => {
 useEffect(() => {
   const loadData = async () => {
     try {
-      const response = await fetch('/courses.csv');
+      const response = await fetch('/merged_courses.csv');
       const text = await response.text();
       Papa.parse<Course>(text, {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
         complete: (results) => {
-          const uniqueDepts = _.uniq(results.data.map(course => course.dept)).filter(Boolean).sort();
+          // Filter out invalid data and ensure proper typing
+          const validCourses = results.data.filter(course => 
+            course.dept && 
+            course.course && 
+            typeof course.dept === 'string' &&
+            typeof course.course === 'string'
+          );
+          
+          // Get unique departments, ensuring they're strings and not null/undefined
+          const uniqueDepts = Array.from(new Set(
+            validCourses.map(course => course.dept?.trim())
+          )).filter((dept): dept is string => Boolean(dept)).sort();
+          
           setDepartments(uniqueDepts);
-          setCourses(results.data);
+          setCourses(validCourses);
           setLoading(false);
         },
         error: (error: Error) => {
@@ -199,14 +213,19 @@ useEffect(() => {
 useEffect(() => {
   if (selectedDept && courses.length > 0) {
     const deptCourses = courses
-      .filter(course => course.dept === selectedDept)
-      .map(course => ({
-        code: course.course?.split(' ')[1] || '',
-        title: course.coursetitle || ''
-      }));
+      .filter(course => course.dept?.trim() === selectedDept)
+      .map(course => {
+        // Handle potential spaces in course numbers
+        const courseNumber = course.course?.replace(selectedDept, '').trim();
+        return {
+          code: courseNumber,
+          title: course.coursetitle || ''
+        };
+      })
+      .filter(course => course.code); // Filter out any invalid entries
     
     const uniqueCourses = _.uniqBy(deptCourses, 'code');
-    setCourseNumbers(uniqueCourses.filter(course => course.code));
+    setCourseNumbers(uniqueCourses.sort((a, b) => a.code.localeCompare(b.code, undefined, {numeric: true})));
     setSelectedCourseNumber('');
   } else {
     setCourseNumbers([]);
@@ -485,16 +504,38 @@ return (
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Department</label>
-              <select
-                value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => {
+                  const term = e.target.value.toUpperCase();
+                  setSearchTerm(term);
+                  setFilteredDepts(
+                    departments.filter(dept => 
+                      dept.toUpperCase().includes(term)
+                    )
+                  );
+                }}
                 className="w-full p-3 bg-gray-900 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="">Select Department</option>
-                {departments.map(dept => (
-                  <option key={dept} value={dept}>{dept}</option>
-                ))}
-              </select>
+                placeholder="Search department (e.g., CMPSC)"
+              />
+              {searchTerm && (
+                <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-gray-700 rounded-lg max-h-60 overflow-auto">
+                  {filteredDepts.map(dept => (
+                    <div
+                      key={dept}
+                      onClick={() => {
+                        setSelectedDept(dept);
+                        setSearchTerm(dept);
+                        setFilteredDepts([]);
+                      }}
+                      className="p-3 hover:bg-gray-800 cursor-pointer text-white"
+                    >
+                      {dept}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
