@@ -131,12 +131,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
       <style>{styles}</style>
       <div 
         onClick={handleLoadingScreenClick}
-        className="fixed inset-0 bg-gray-900 flex cursor-pointer overflow-hidden"
+        className="fixed inset-0 bg-[#202020] flex cursor-pointer overflow-hidden"
       >
         <div className="w-full md:w-1/2 flex items-center justify-center z-10 relative px-4 md:px-0">
-          <div className="space-y-4 max-w-full">
+          <div className="space-y-4 max-w-full translate-y-[-280px] translate-x-[340px]">
             <div className={`space-y-4 ${!isTransitioning ? 'animate-laptop' : ''}`}>
-              <h1 className={`text-3xl md:text-5xl font-light text-gray-300 whitespace-normal 
+              <h1 className={`text-3xl md:text-5xl font-light text-gray-300 whitespace-normal
                 ${isTransitioning ? 'slide-out-left' : ''}`}>
                 {firstTypedText}
               </h1>
@@ -156,12 +156,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             </div>
           </div>
         </div>
-        <div className={`w-3/4 relative hidden md:block ${isTransitioning ? 'fade-out-image' : ''}`}>
+        <div className={`w-3/4 relative h-lvh flex items-center justify-center ${isTransitioning ? 'fade-out-image' : ''}`}>
           <Image 
             src="/computer.svg" 
             alt="Computer illustration" 
             fill
-            className="object-cover z-0 pointer-events-none"
+            className="object-cover z-0 pointer-events-none  translate-y-[200px] translate-x-[-200px]"
           />
         </div>
       </div>

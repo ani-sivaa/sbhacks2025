@@ -24,10 +24,10 @@ const styles = `
 .course-grid {
   display: grid;
   grid-template-areas:
-    "credits   prof      center    rating    would"
-    "gpa      desc      desc      desc      diff"
+    "prof   center      center    credits    would"
+    "gpa      dist      dist      dist      diff"
     "term     desc      desc      desc      term2"
-    "dist     dist      dist      dist      dist"
+    "term     desc     desc     desc     term2"
   ;
   grid-template-columns: auto 1fr 1fr 1fr auto;
   grid-template-rows: auto minmax(250px, auto) auto auto;
@@ -48,11 +48,7 @@ const styles = `
     gap: 1rem;
     padding: 1rem;
   }
-  
-  .center-card {
-    margin: 0.5rem;
-    padding: 2rem;
-  }
+
 }
 
 @media (max-width: 768px) {
@@ -74,32 +70,23 @@ const styles = `
     padding: 1rem;
   }
   
-  .center-card {
-    transform: scale(1);
-    margin: 0;
-    padding: 1.5rem;
-  }
   
-  .center-card:hover {
-    transform: scale(1.02);
-  }
+  
+ 
 }
 
 .center-card {
   grid-area: center;
-  background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-  padding: 3rem;
-  border-radius: 2rem;
+  background:#ABD4FF ;
+  padding: 1.5rem;
+  border-radius: 1rem;
   text-align: center;
-  transform: scale(1.05);
-  z-index: 10;
-  margin: 1rem;
-  box-shadow: 
-    0 0 40px rgba(0, 0, 0, 0.2),
-    inset 0 0 15px rgba(255, 255, 255, 0.05);
+  transform: scale(1.0);
+  height: 100%;
+  
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease-in-out;
-  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+  border: 
 }
 
 .center-card:hover {
@@ -110,24 +97,17 @@ const styles = `
 }
 
 .metric-card {
-  background: linear-gradient(145deg, #1E1E1E, #141414);
+  background: linear-gradient(0deg, #202020, #080808);
   border-radius: 1rem;
   padding: 1.5rem;
   color: white;
   transition: transform 0.2s ease;
   height: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 0px solid rgba(255, 255, 255, 0.05);
 }
 
-.metric-card {
-  background: #1E1E1E;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  color: white;
-  transition: transform 0.2s ease;
-  height: 100%;
-}
+
 
 .metric-card[data-size="large"] {
   min-height: 400px;
@@ -151,14 +131,14 @@ const styles = `
 }
 
 .metric-value {
-  font-size: 2.5rem;
+  font-size: 4.0rem;
   font-weight: bold;
-  color: #69A7FF;
+  color:rgb(76, 81, 215);
 }
 
 .metric-label {
-  font-size: 0.875rem;
-  color: #9CA3AF;
+  font-size: 1.2rem;
+  color: #FFFFFF;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -283,7 +263,7 @@ if (loading) {
 // Course Details View
 if (selectedCourse) {
   return (
-    <div className="min-h-screen bg-black p-8 pb-32 overflow-y-auto h-full">
+    <div className="min-h-screen bg-[#080808] p-8 pb-32 overflow-y-auto h-full">
       <style>{styles}</style>
       
       <div className="course-grid">
@@ -298,33 +278,26 @@ if (selectedCourse) {
         {/* Professor */}
         <div className="metric-card p-8 text-center flex flex-col items-center justify-center" style={{ gridArea: 'prof' }}>
           <div className="metric-label text-lg">Professor</div>
-          <div className="metric-value text-2xl">{selectedCourse.instructor}</div>
+          <div className="metric-value ">{selectedCourse.instructor}</div>
         </div>
         {/* Center Card - Course Code */}
         <div className="center-card">
-          <h1 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 mb-4">
-            {selectedCourse.course}
-          </h1>
+        <div className="font-black text-7xl text-black">{selectedCourse.course}</div>
+        <div className="text-2xl text-black">{selectedCourse.coursetitle}</div>
           <p className="text-xl text-gray-600">
             
           </p>
         </div>
-        {/* Rating */}
-        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'rating' }}>
-          <div className="text-5xl">{selectedCourse.coursetitle}</div>
-          <div className="text-base">
-          
-          </div>
-        </div>
+        
         
         {/* Average GPA */}
-        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'gpa' }}>
+        <div className="metric-card text-center flex flex-col items-center justify-center h-48" style={{ gridArea: 'gpa' }}>
           <div className="metric-label text-lg">Average GPA</div>
           <div className="metric-value text-5xl">{selectedCourse.avgGPA}</div>
         </div>
 
         {/* Difficulty */}
-        <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'diff' }}>
+        <div className="metric-card text-center flex flex-col items-center justify-center h-48" style={{ gridArea: 'diff' }}>
           <div className="metric-label text-lg">Difficulty</div>
           <div className="metric-value text-5xl">{selectedCourse.difficultylevel || '—'}</div>
           <div className="text-gray-400 text-base mt-2">out of 5</div>
@@ -333,7 +306,7 @@ if (selectedCourse) {
         {/* Term */}
         <div className="metric-card text-center flex flex-col items-center justify-center" style={{ gridArea: 'term' }}>
           <div className="metric-label text-lg">Data From</div>
-          <div className="metric-value text-2xl">
+          <div className="metric-value ">
             {selectedCourse.quarter} {selectedCourse.year}
           </div>
         </div>
@@ -391,7 +364,7 @@ if (selectedCourse) {
             </button>
           </div>
 
-          <div className="relative overflow-hidden h-[250px] bg-gray-900 rounded-lg">
+          <div className="relative overflow-hidden h-[250px] bg:#202020 rounded-lg">
             <div 
               className="absolute inset-0 transition-transform duration-500 ease-in-out flex"
               style={{
@@ -430,7 +403,7 @@ if (selectedCourse) {
                 <div className="space-y-4">
                   {selectedCourse.prereqs ? (
                     <div className="bg-gray-800 rounded-lg p-4">
-                      <h3 className="text-blue-400 font-medium mb-2">Prerequisites</h3>
+                      <h3 className="text-blue-400 font-medium mb-2"></h3>
                       <p className="text-gray-300 whitespace-pre-wrap break-words text-2xl">
                         {selectedCourse.prereqs}
                       </p>
@@ -447,23 +420,35 @@ if (selectedCourse) {
         {/* Grade Distribution */}
         <div className="metric-card mb-20" style={{ gridArea: 'dist' }}>
           <div className="metric-label mb-4">Grade Distribution</div>
-          <div className="h-80">
+          <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={getGradeData(selectedCourse)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="grade" stroke="#69A7FF" />
-                <YAxis stroke="#69A7FF" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
+                <XAxis 
+                  dataKey="grade" 
+                  stroke="#FFFFFF" 
+                  tick={{ fill: '#FFFFFF' }}
+                />
+                <YAxis 
+                  stroke="#FFFFFF"
+                  tick={{ fill: '#FFFFFF' }}
+                />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1E1E1E',
-                    border: '1px solid #374151',
+                    backgroundColor: '#202020',
+                    border: '1px solid #2A2A2A',
                     borderRadius: '0.5rem',
-                    color: '#69A7FF'
+                    padding: '10px'
                   }}
+                  cursor={{ fill: 'rgba(255, 255, 255, 0.1)' }}
+                  formatter={(value) => [
+                    <span className="text-white">{value}</span>,
+                    <span className="text-white">Count</span>
+                  ]}
                 />
-                <Bar dataKey="count">
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                   {getGradeData(selectedCourse).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="#69A7FF" />
+                    <Cell key={`cell-${index}`} fill="rgb(76, 81, 215)" />
                   ))}
                 </Bar>
               </BarChart>
