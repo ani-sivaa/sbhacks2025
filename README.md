@@ -1,4 +1,6 @@
-# GauchoCourse
+# SBHacks XI - GauchoCourse
+
+# WINNER - Best Use of AI!
 
 ## Overview
 
