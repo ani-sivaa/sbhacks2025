@@ -18,7 +18,7 @@
 - **Frontend**: React, TailwindCSS, Next.js
 - **Database**: Pinecone (vector database for similarity search)
 - **Web Scraping**: Python scripts for gathering course data and reviews
-- **Deployment**: Vercel
+- **Deployment**: CLONE OUR REPO and run npm run dev in the /gauchoclass folder and run the python script for the chatbot to work.
 
 ## How It Works
 
